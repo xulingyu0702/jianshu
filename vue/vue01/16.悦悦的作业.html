@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>todoList</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+
+
+  <style>
+    #root {
+        margin: 10px 400px;
+      }
+      .active{
+        background: #337ab7;
+      }
+      .btn-danger,.btn-success,.btn-warning{
+        float: right;
+      }
+    </style>
+</head>
+
+<body>
+  <div id="root">
+    <div>
+      <form class="form-inline">
+        <input class="form-control" placeholder="请输入内容" ref="inputFocus" v-model="inputValue" autofocus="true" style="width:300px" />
+        <button class="btn btn-primary" @click="handleSubmit">添加</button>
+      </form>
+    </div>
+    <div>
+      <div style="margin: 20px 0px;">
+        <span>任务列表</span>
+        <span style="float: right;">
+          <button 
+            type="button"
+            v-for="(nav,i) of navs" 
+            :class="nav.current?'btn btn-primary':'btn btn-light'"             
+            @click="toggleList($event,i)"
+          >
+            {{nav.type}}
+          </button>
+          <!-- <button type="button" class="btn btn-default">已完成</button>
+          <button type="button" class="btn btn-primary">全部</button> -->
+        </span>
+      </div>
+      <div v-for="(item,index) of newList" :key="index" style="margin-bottom: 15px">
+        <input ref="checkBox" type="checkbox" :key="index"  ref="checkBox"  @change="handleChecked(item.id,$event)" />
+        <span>{{ item.value }}</span>
+        <button class="btn btn-danger" @click="handleDel(index)">删除</button>&nbsp;
+        <button :class="item.isCompleted === true ? 'btn btn-success' : 'btn btn-warning'" @click="handleToggle(item)">
+          {{ item.isCompleted === true ? "标记已完成" : "标记未完成" }}
+        </button>
+      </div>
+      <div>
+        <input ref="checkAll" type="checkbox" @change="handleCheckAll" />
+        <button class="btn btn-danger" @click="handleDelChecked">删除所选</button>
+      </div>
+      <div>
+        共{{ list.length }}项任务，已完成{{ count }}项，未完成{{ list.length - count }}项
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  new Vue({
+    el: "#root",
+    data: {
+      id: 1,
+      inputValue: "",
+      list: [],
+      checked: [],
+      tag: "全部",
+      navs: [
+        { type:"未完成",current:true},
+        { type:"已完成",current:false},
+        { type:"全部",current:false}
+      ]
+    },
+    computed: {
+      count() {
+        let num = 0;
+        this.list.map((content, index) => {
+          if (content.isCompleted === true) {
+            num++;
+          }
+        });
+        return num;
+      },
+      newList() {
+        if (this.tag === "全部") {
+          return this.list.map(item => item);
+        } else if (this.tag === "未完成") {
+          return this.list.filter(item => {
+            return item.isCompleted === false;
+          });
+        } else if (this.tag === "已完成") {
+          return this.list.filter(item => {
+            return item.isCompleted === true;
+          });
+        }
+      }
+    },
+    methods: {
+      // 添加
+      handleSubmit(event) {
+        event.preventDefault();
+        if (this.inputValue !== "") {
+          let obj = {
+            id: this.id++,
+            value: this.inputValue,
+            isCompleted: false
+          };
+          this.list.push(obj);
+          this.inputValue = "";
+          this.$refs.inputFocus.setFocus();
+          // console.log(this.$refs.inputFocus);
+        }
+      },
+      // 删除单个
+      handleDel(index) {
+        this.list.splice(index, 1);
+      },
+      // 删除选中的
+      handleDelChecked() {
+        this.list.map((content, index) => {
+          this.$refs.checkBox.checked = false;
+         // console.log(this.checked.indexOf(content.id));
+          if (this.checked.indexOf(content.id) >= 0) {
+            this.list.splice(index, 1);
+            // this.checked[content.id]=
+          } else {
+            // this.$refs.checkBox.checked = false
+          }
+        });
+        this.checked = [];
+      },
+      // 标记是否已完成
+      handleToggle(item) {
+        item.isCompleted = !item.isCompleted;
+      },
+      // 过滤全部是否完成
+      toggleList(e, i) {
+        for (let elem of this.navs){
+          elem.current=false;
+        }
+        console.log(e)
+        switch (e.target.innerText)
+        {   
+          case "全部":
+            this.navs[i].current=true;
+            this.tag="全部"
+            break;
+          case "已完成":
+            this.navs[i].current=true;
+            this.tag="已完成"
+            break;
+          case "未完成":
+            this.navs[i].current=true;
+            this.tag="未完成"
+            break;
+        }
+      },
+      handleCompleted(e) {
+        console.log(123)
+        // this.$refs.spanCompleted.children[0].className = "btn btn-default";
+        // this.$refs.spanCompleted.children[1].className = "btn btn-default";
+        // this.$refs.spanCompleted.children[2].className = "btn btn-default";
+        e.target.className = "btn btn-primary";
+        console.log(e);
+        if (e.target.innerHTML === "未完成") {
+          this.tag = "未完成";
+        } else if (e.target.innerHTML === "已完成") {
+          this.tag = "已完成";
+        } else {
+          this.tag = "全部";
+        }
+      },
+      // 是否选中
+      handleChecked(id, e) {
+        if (e.target.checked) {
+          this.checked.push(id);
+        } else {
+          // 如果没被选中就遍历找到它，并删除，index 是content对应的位置
+          this.checked.map((content, index) => {
+            if (id === content) {
+              this.checked.splice(index, 1);
+            }
+          });
+        }
+        if (this.list.length === this.checked.length) {
+          this.$refs.checkAll.checked = true;
+        } else {
+          this.$refs.checkAll.checked = false;
+        }
+      },
+      // 全选
+      handleCheckAll(e) {
+        // 如果被选中，就把 list 中所有的id，放到checked中，并把input框中的 'checked属性' 设为true
+        if (e.target.checked === true) {
+          this.list.map((content, index) => {
+            this.$refs.checkBox[index].checked = true;
+            console.log(this.$refs.checkBox);
+            this.checked.push(content.id);
+          });
+        } else {
+          this.checked = [];
+          this.list.map((content, index) => {
+            this.$refs.checkBox[index].checked = false;
+          });
+        }
+      }
+    }
+  });
+</script>
+
+</html>

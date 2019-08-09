@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>列表循环</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+</style>
+</head>
+<body>
+<div id="app">
+  <div   v-for="(item,key,index) of userInfo"> 
+  {{item}}----{{key}}---{{index}}
+  </div>
+</div>
+<script>
+  //1.在vue中改变数组值 不可以通过下标的方式改变，可以通过改变指针地址，和pop shift unshift push splice等方法这两种方式改变
+  //2.如果不希望DOM结构太复杂 ，可以使用template占位符，DOM结构中将不具有此结构。
+  //3. 如果想要增加对象的内容 需要通过改变指针地址改变 app.userInfo.adress="qqq" 这种操作值改变  但页面不渲染
+  //4.vue内置set方法 也可以改变数组和对像的值
+  // Vue.set(app.userInfo,1,5)
+  //app.$set(app.userInfo,1,5)   ---数组的两种方法
+  // Vue.set(app.userInfo,"adress","beijing")
+  //app.$set(app.userInfo,"adress","beijing") ---对象的两种方法   键也有要“ ” 不然报undefined
+  const app = new Vue({
+    el: '#app',
+    data() {
+      return {
+        userInfo:{
+          name:'lisi',
+          age:28,
+          gender:"man "
+        }
+      }
+    },
+    methods: {
+
+    },
+  })
+</script>
+</body>
+</html>

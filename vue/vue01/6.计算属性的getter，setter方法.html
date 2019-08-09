@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+</style>
+</head>
+<body>
+<div id="app">
+  
+  {{fullName}}
+  
+</div>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data() {
+      return {
+        firstName:'lisi',
+        lastName:'wangwi'
+      }
+    },
+    methods: {  
+    },
+     computed: {
+       fullName:{
+         get:function(){
+           return this.firstName + " " +this.lastName
+         },
+         set:function(value){
+           var arr =value.splice(" ");
+           this.firstName=arr[0];
+           this.lastName=arr[1];
+         }
+       }
+     },
+   
+  })
+</script>
+</body>
+</html>

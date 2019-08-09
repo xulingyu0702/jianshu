@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+        <counter @change="handleChange" ref="one"></counter>
+        <counter @change="handleChange"  ref="two"></counter>
+       <div>{{total}}</div>
+
+    </div>
+  </div>
+  <script>
+    //ref 当写在DIV上时 通过this.$ref+名字 获取到的是标签对应的元素，而当在组件上写ref是  取到的是子组件的引用
+    Vue.component('counter',{
+      template:'<div @click="handleClick">{{number}}</div>',
+      data(){
+        return{
+          number:0,
+        }
+      },
+      methods:{
+        handleClick:function(){
+          this.number++;
+          this.$emit('change')
+        }
+      }
+    })
+    const app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          total:0,
+        }
+      },
+      methods: {
+        handleChange:function(){
+          this.total = this.$refs.one.number+this.$refs.two.number
+       console.log(this.$refs.one)
+       console.log(this.$refs.two)
+
+        }
+
+      },
+    })
+  </script>
+</body>
+
+</html>

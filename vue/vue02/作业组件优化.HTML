@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>todoList</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+  <style>
+    #app {
+      margin: 10px 400px;
+    }
+
+    .input-content {
+      width: 400px;
+      height: 30px;
+    }
+
+    .btn-add {
+      height: 30px;
+      width: 80px;
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+
+    .btn-normal {
+      height: 30px;
+      width: 80px;
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-image: none;
+      border: 1px black solid transparent;
+      border-radius: 4px;
+      color: #2e6da4;
+      background-color: #fff;
+      border-color: #fff;
+    }
+
+    .btn-danger {
+      height: 30px;
+      width: 80px;
+      background-color: rgb(218, 47, 61);
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-image: none;
+      border: 1px black solid transparent;
+      border-radius: 4px;
+      color: black;
+      border-color: #fff;
+      float: right;
+    }
+
+    .btn-done {
+      height: 30px;
+      width: 150px;
+      background-color: rgb(57, 223, 131);
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-image: none;
+      border: 1px black solid transparent;
+      border-radius: 4px;
+      color: black;
+      float: right;
+    }
+
+    .btn-go {
+      height: 30px;
+      width: 150px;
+      background-color: rgb(247, 244, 71);
+      vertical-align: middle;
+      line-height: 30px;
+      float: right;
+    }
+
+    .form-list {
+      margin: 20px 0px
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <input class="input-content" v-model="inputValue" @keyup.enter="handleAdd" />
+      <button class="btn-add" @click="handleAdd">添加</button>
+    </div>
+    <div>
+      <div class="form-list">
+        <span>任务列表</span>
+        <button style="float:right;" type="button" v-for="(item,index) of buttonList"
+          :class="item.isActive?'btn-add':'btn-normal'" @click="checkList($event,index)">
+          {{item.type}}
+        </button>
+      </div>
+      <form-item :item="item" :index="index" v-for="(item,index) of showList" :list="list" :key="index"></form-item>
+      <div>
+        <input type="checkbox" @click="handelStatus('all')" :checked="checkAll" />
+        <button class="btn-danger" @click="handleDeleteSelected">删除所选</button>
+      </div>
+      <div>
+        共{{ list.length }}项任务，已完成{{ count }}项，未完成{{ list.length - count }}项
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  Vue.component('formItem', {
+    props: ['item', "index" ,"list",],
+    data() {
+      return {
+        // checkAll: false,
+       
+      }
+    },
+    template: `    <div :key="index" style="margin-bottom: 15px" >
+        <input type="checkbox" :key="index" :checked="item.isChecked" @click="handelStatus(index)" />
+        <span>{{ item.value }}</span>
+
+        <button :class="item.isCompleted === true ? 'btn-done' : 'btn-go'" @click="handleToggle(item)">
+          {{ item.isCompleted === true ? "标记已完成" : "标记未完成" }}
+
+        </button>
+        <button class="btn-danger" @click="handleDelete(index)">删除</button>
+
+      </div> `,
+    methods: {
+      //改变checkbox状态
+      handelStatus() {
+        this.item.isChecked=!this.item.isChecked;
+      },
+      //状态更改
+      handleToggle(item) {
+        item.isCompleted = !item.isCompleted;
+      },
+      //删除按键事件
+      handleDelete(index) {
+        this.list.splice(index, 1);
+      },
+    }
+  })
+
+  new Vue({
+    el: "#app",
+    data: {
+      checkAll: false,
+      inputValue: "",
+      list: [],
+      checked: [],
+      tag: "全部",
+      buttonList: [
+        { type: "全部", isActive: true },
+        { type: "已完成", isActive: false },
+        { type: "未完成", isActive: false },
+      ]
+    },
+    methods: {
+      //增加数据
+      handleAdd() {
+        this.list.push({
+          value: this.inputValue,
+          isCompleted: false,
+          isChecked: false,
+        });
+        this.inputValue = "";
+      },
+
+      //过滤掉被选数据
+      handleDeleteSelected() {
+        this.list = this.list.filter(item => {
+          return item.isChecked === false;
+        })
+        this.checkAll=false;
+
+      },
+
+
+      //按钮样式切换
+      checkList(e, idx) {
+        //样式置空
+        for (let elem of this.buttonList) {
+          elem.isActive = false;
+        }
+        switch (e.target.innerText) {
+          case "全部":
+            this.buttonList[idx].isActive = true;
+            this.tag = "全部"
+            break;
+          case "已完成":
+            this.buttonList[idx].isActive = true;
+            this.tag = "已完成"
+            break;
+          case "未完成":
+            this.buttonList[idx].isActive = true;
+            this.tag = "未完成"
+            break;
+        }
+      },
+      handelStatus(index) {
+        if (index == 'all') {
+          this.checkAll = !this.checkAll
+          this.showList.map(item => {
+            item.isChecked = this.checkAll;
+          })
+        } else {
+          this.showList[index].isChecked = !this.showList[index].isChecked;
+        }
+
+      },
+    },
+    computed: {
+      count() {
+        let num = 0;
+        this.list.map((content, index) => {
+          if (content.isCompleted === true) {
+            num++;
+          }
+        });
+        return num;
+      },
+      //根据tag监听展示列表
+      showList() {
+        if (this.tag === "全部") {
+          return this.list.map(item => item);
+        } else if (this.tag === "未完成") {
+          return this.list.filter(item => {
+            return item.isCompleted === false;
+          });
+        } else if (this.tag === "已完成") {
+          return this.list.filter(item => {
+            return item.isCompleted === true;
+          });
+        }
+      }
+    },
+
+  });
+</script>
+
+</html>

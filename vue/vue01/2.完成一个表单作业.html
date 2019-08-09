@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+li{
+  float: left;
+  text-decoration: none;
+  list-style: none;
+  width: 200px;
+}
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    姓名:<input type="text" v-model="inputValue1">
+    工号:<input type="text" v-model="inputValue2">
+    性别:<input type="text" v-model="inputValue3">
+    手机号码:<input type="text" v-model="inputValue4">
+    地址:<input type="text" v-model="inputValue5">
+    <button @click="handleButtonClick">提交</button>
+ 
+  <div>
+    <ul v-if="list.length>0 ">
+      <li>姓名</li> <li>工号</li> <li>性别</li> <li>手机号码</li> <li>地址</li> <li>操作</li>
+    </ul>
+    <ul v-for="(item,index) in list " :key="index" class="item-view"> 
+      <li>
+        {{item.inputValue1}}
+      </li>
+      <li>
+        {{item.inputValue2}}
+      </li>
+      <li>
+        {{item.inputValue3}}
+      </li>
+      <li>
+        {{item.inputValue4}}
+      </li>
+      <li>
+        {{item.inputValue5}}
+      </li>
+     <li>
+        <button @click="handleDelete(index)"> 删除</button>
+     </li>
+         
+       
+    </ul>
+  </div>
+</div>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          inputValue1: "",
+          inputValue2: "",
+          inputValue3: "",
+          inputValue4: "",
+          inputValue5: "",
+          list: []
+        }
+      },
+      methods: {
+        handleButtonClick: function () {
+          if (this.inputValue1 == "" || this.inputValue2 == "" || this.inputValue3 == "" || this.inputValue4 == "" || this.inputValue5 == "") {
+            alert("请将信息填写完整")
+          } else {
+            this.list.push({
+              inputValue1: this.inputValue1,
+              inputValue2: this.inputValue2,
+              inputValue3: this.inputValue3,
+              inputValue4: this.inputValue4,
+              inputValue5: this.inputValue5,
+            })
+            this.inputValue1 = "";
+            this.inputValue2 = "";
+            this.inputValue3 = "";
+            this.inputValue4 = "";
+            this.inputValue5 = "";
+            window.console.log(this.list)
+          }
+        },
+        handleDelete:function(index){
+          this.list.splice(index,1)
+        }
+      },
+    })
+  </script>
+</body>
+
+</html>

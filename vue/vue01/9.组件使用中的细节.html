@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <table>
+      <tbody>
+        <tr is="row"></tr>
+        <tr is="row"></tr>
+        <tr is="row"></tr>
+
+        <button-counter></button-counter>
+      </tbody>
+    </table>
+
+  </div>
+  <script>
+    //1.可以用is写法 代替row，避免在DOM结构中渲染不正确BUG
+    Vue.component('row', {
+      data: function () {
+        return {
+          content: 'lalalala',
+        }
+      },
+      template: '<tr><td>{{content}}</td></tr>'
+
+
+    })
+    const app = new Vue({
+      el: '#app',
+
+    })
+  </script>
+</body>
+
+</html>

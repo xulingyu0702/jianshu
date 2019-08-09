@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <counter :count="2" @change="handleInc"></counter>
+      <counter :count="1" @change="handleInc"></counter>
+      {{total}}
+
+    </div>
+  </div>
+  <script>
+    //数据流是单向的 引发一堆问题 我觉得我需要再查查资料
+    //子组件不能直接修改父组件传递的参数？？？？ 我明明没报错  最好拷贝一个副本
+    //子父组件传值通过事件触发，比如子组件点击方法中写this.$emit("方法名"，参数) 在父组件上@方法名=新方法名（接收的形参）然后操作数据
+    var counter = {
+      props: ['count'],
+      data: function () {
+        return {
+          number:this.count,
+
+        }
+      },
+      template: '<div @click="handleClick"> {{number}} </div>',
+      methods: {
+        handleClick: function () {
+          this.number+=2
+          this.$emit("change",2)
+        }
+
+      },
+    }
+    const app = new Vue({
+      el: '#app',
+      components: {
+        counter: counter
+      },
+      data() {
+        return {
+          total:3,
+        }
+      },
+      methods:{
+        handleInc:function(aaa){
+          this.total+=aaa
+        }
+      }
+
+    })
+  </script>
+</body>
+
+</html>

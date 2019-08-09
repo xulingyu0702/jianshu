@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- 因为DIFF算法的原因，再次渲染页面时，会复用之前的DOM结构，所以需要key值作为标志 切换DOM 
+  
+  -->
+  <div v-if="show" > 
+  {{message}}
+  用户名：<input key="username"/>
+  </div>
+  <div v-else > 
+    lalala
+  邮箱名：<input key="email"/>
+
+    </div>
+</div>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data() {
+      return {
+        show:false,
+        message:"hello world"
+      }
+    },
+    methods: {
+     
+     
+    },
+  })
+</script>
+</body>
+</html>

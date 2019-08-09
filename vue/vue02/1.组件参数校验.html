@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <child content="hrii"></child>
+    </div>
+  </div>
+  <script>
+    Vue.component("child",{
+      //子组件接受什么形式的参数可以规定
+      props:{
+        content:{
+        // type:String,//传值类型
+        required:true,//必须传值
+        // default:'default value',//默认值
+        validator:function(value){//期望值长度大于五   但是我小于五也没报错啊 VUE改版了吧
+          return (value.length>5);
+        }
+      }
+      },
+      template:`<div>{{content}}</div>`
+
+    })
+
+    const app = new Vue({
+      el: '#app',
+      data:function() {
+        return {
+        }
+      },
+      methods: {
+
+
+      },
+    })
+  </script>
+</body>
+
+</html>
