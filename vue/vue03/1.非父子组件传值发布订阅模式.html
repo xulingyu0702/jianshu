@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <child content="dell"></child>
+      <child content="qqqq"></child>
+    </div>
+  </div>
+  <script>
+    //属于一个发布订阅者模式
+    Vue.prototype.bus = new Vue()//挂在一个属性在实例上
+    Vue.component('child', {
+      data() {
+        return {
+          selfContent: this.content//单向数据流
+        }
+      },
+      props: {
+        content: String
+      },
+      template: `<div @click="handleClick">{{selfContent}}</div>`,
+      methods: {
+        handleClick: function () {
+          this.bus.$emit('change', this.selfContent)//通过BUS触发事件传值  非父子组件传值
+        },
+      },
+      mounted() {
+        var _this = this
+        this.bus.$on('change', function (msg) {
+          _this.selfContent = msg
+
+        })
+      },
+    }
+    )
+    const app = new Vue({
+      el: '#app',
+      data() {
+        return {
+
+        }
+      },
+      methods: {
+
+
+      },
+    })
+  </script>
+</body>
+
+</html>

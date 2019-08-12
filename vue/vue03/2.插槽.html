@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+  <style>
+
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+<child>
+<h1 slot="header">header</h1> 
+<h1 slot="footer">footer<h1>
+</child>
+    </div>
+  </div>
+  <script>
+    Vue.component('child',{
+      //具名插槽
+      template:`
+      <div>
+        <slot name="header">默认内容</slot>
+        <div>hello </div>
+        <slot name="footer">默认内容</slot>
+      </div>
+        
+        `
+    })
+    const app = new Vue({
+      el: '#app',
+      data() {
+        return {
+
+        }
+      },
+      methods: {
+
+
+      },
+    })
+  </script>
+</body>
+
+</html>
